@@ -13,12 +13,9 @@ st.title("Consulta de Processos - Escavador")
 # Entrada do CPF/CNPJ
 cnpj = st.text_input("Digite o CPF ou CNPJ")
 
-# Escolha da pasta de saída
-pasta_saida = st.text_input("Caminho da pasta para salvar o CSV", value=os.getcwd())
-
 # Botão para executar
-if st.button("Consultar e salvar"):
-    if not cnpj or not pasta_saida:
+if st.button("Consultar"):
+    if not cnpj:
         st.error("Por favor, preencha o CPF/CNPJ e o caminho da pasta.")
     else:
         with st.spinner("Consultando processos..."):
@@ -110,10 +107,11 @@ if st.button("Consultar e salvar"):
 
             df = pd.DataFrame(processos)
 
-            # Salvar o CSV na pasta escolhida
-            try:
-                caminho_arquivo = os.path.join(pasta_saida, "processos.csv")
-                df.to_csv(caminho_arquivo, index=False)
-                st.success(f"Arquivo salvo com sucesso em: {caminho_arquivo}")
-            except Exception as e:
-                st.error(f"Erro ao salvar o arquivo: {e}")
+            # Gerar CSV para download
+            csv_bytes = df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label= "Baixar CSV",
+                data=csv_bytes,
+                file_name="processos.csv",
+                mime="text/csv"
+            )
