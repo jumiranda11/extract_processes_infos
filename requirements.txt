@@ -1,0 +1,4 @@
+escavador
+pandas
+streamlit
+python-dotenv
